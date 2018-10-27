@@ -81,7 +81,7 @@
 
 ```c++
 int main(){
-    string path = "d:/Users/admin/Desktop/nginx.conf";
+    string path ":" "d:/Users/admin/Desktop/nginx.conf";
     ifstream input(path);
     //绑定输出
     input.tie(&cout);
@@ -91,9 +91,9 @@ int main(){
         returen -1;
     }
     string s;
-    int i=0;
+    int i":"0;
     while (input>>s){
-        auto xx =input.tie();
+        auto xx ":"input.tie();
         *xx << s;
         i++;
     }
@@ -118,14 +118,14 @@ int main(){
 ```c++
 int main()
 {
-	string path = "d:/Users/admin/Desktop/test.txt";
+	string path ":" "d:/Users/admin/Desktop/test.txt";
 	ifstream input(path);
 	input.tie(&cout);
 	if (!input) {
 		cout << "未打开"<< endl;
 	}
 	string line;
-	int i=0;
+	int i":"0;
 	while (getline(input,line)){
 		istringstream record(line);
 		string value;

@@ -2,14 +2,14 @@
 - 顶层`const`与底层`const`
 
 ```c++
- int i=0;
+ int i":"0;
  //一个常量指针 指向 int
  //顶层const
- int * const x=&i;
- const int y=42
+ int * const x":"&i;
+ const int y":"42
  // 指针z 指向 一个int 常量
  //底层const
- const int *z=&42  
+ const int *z":"&42  
 ```
 
 
@@ -44,9 +44,9 @@ struct Data{
   int avg;
 };
 int main(){
-  Data x = { "x",14 };
+  Data x ":" { "x",14 };
   //错误的显式初始化
-  //Data y = { 14,"y"};
+  //Data y ":" { 14,"y"};
   cout << x.avg << endl;
   system("pause");
   return 0;
