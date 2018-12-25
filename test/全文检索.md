@@ -1,0 +1,266 @@
+# 信息检索技术
+- 是一种将文件中所有文本与检索项匹配的文字资料检索方法
+- 全文检索系统是按照全文检索理论,建立起来的用于提供全文检索服务的软件系统
+- 全文检索主要对非结构化数据的数据检索
+
+## 结构化数据
+- 有固定格式或有限长度的数据
+- 数据库，元数据等
+
+## 非结构化数据
+- 指不定长或无固定格式的数据
+- 如邮件，word文档，网页等
+
+> 非结构化数据又一种叫法叫全文数据
+
+## 数据搜索
+- 对结构化数据的搜索
+    - 对数据库的搜索，用SQL语句
+
+- 对非结构化数据的搜索
+    - 如利用windows的搜索也可以搜索文件内容，Linux下的grep命令
+    - Google和百度可以搜索大量内容数据
+
+
+## 顺序扫描法
+- 所谓顺序扫描，比如要找内容包含某一个字符串的文件，就是一个文档一个文档的看，对于每一个文档，从头看到尾，如果此文档包含此字符串，则此文档为我们要找的文件，接着看下一个文件，直到扫描完所有的文件
+- 对于小数据量的文件，这种方法还是最直接，最方便的
+
+
+## 索引
+- 字典，对每一个字的解释是非结构化的，如果字典没有音节表和部首检字表，在茫茫辞海中找一个字只能顺序扫描
+
+> 这种先建立索引，再对索引进行搜索的过程就叫全文检索(Full-text Search)。
+
+### 全文检索远离
+1. 创建索引(Indexing)
+    - 将现实世界中所有的结构化和非结构化数据提取信息，创建索引的过程
+2. 搜索索引(Search)
+    - 就是得到用户的查询请求，搜索创建的索引，然后返回结果的过程
+
+### 正向索引
+- 已知文件，欲检索数据
+    - 文件——数据的映射
+        - 称为正向索引
+
+### 反向索引
+- 这是已知数据 欲检索文件
+    - 数据——文件的映射
+        - 称为反向索引
+        - 又称倒排索引
+> 全文搜索相对于顺序扫描的优势之一：一次索引，多次使用
+
+## 搜索排名
+- 判断搜索出的文档和查询语句的相关性
+
+### 向量空间模型算法(Vector Space Model)
+- Salton等人于20世纪70年代提出
+    - 并成功地应用于文本检索系统
+
+- 算法原理
+    - 略
+
+
+## Lucene
+- 套用于全文检索和搜寻的开源程式库
+- 一个简单却强大的应用程式接口
+- 能够做全文索引和搜寻
+- 优点
+    - 兼容系统或者不同平台的应用能够共享建立的索引文件(8位字节为基础的索引文件格式)
+    - 在传统全文检索引擎的倒排索引的基础上，实现了分块索引，能够针对新的文件建立小文件索引，提升索引速度。然后通过与原有索引的合并，达到优化的目的
+    - 优秀的面向对象的系统架构
+    - 设计了独立于语言和文件格式的文本分析接口，索引器通过接受Token流完成索引文件的创立，用户扩展新的语言和文件格式，只需要实现文本分析的接口
+    - 已经默认实现了一套强大的查询引擎，用户无需自己编写代码即可使系统可获得强大的查询能力
+
+- 作者
+    - Doug Cutting
+        - Hadoop之父
+
+
+## 使用lucene
+- 引用相关jar
+
+```xml
+ 	<!-- solrj -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+
+		<!-- Lucene -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers-common</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+			<version>5.2.1</version>
+		</dependency>
+
+		<!-- IK分词器 支持中文分词-->
+		<dependency>
+			<groupId>org.wltea.analyzer</groupId>
+			<artifactId>ik-analyzer</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+
+```
+- Demo
+
+```java
+public class testdemo {
+
+	@Test
+	public void cteateIndext() throws Exception{
+		//指定索引文件路径
+		Directory directory = FSDirectory.open(Paths.get("./index"));
+		//指定分词器
+		Analyzer analyzer=new StandardAnalyzer();
+	/*	Analyzer analyzer=new ChineseAnalyzer();*/
+
+		//设置分词器
+		IndexWriterConfig conf=new IndexWriterConfig(analyzer);
+
+		//写出器 分词器
+		IndexWriter writer=new IndexWriter(directory, conf);
+
+		Document doc1=new Document();
+		doc1.add(new TextField("title","Thinking in Java",Store.YES));
+		doc1.add(new DoubleField("price", 78.5, Store.YES));
+		doc1.add(new TextField("desc", "学习Java的入门书籍",Store.YES));
+		Document doc2=new Document();
+		//添加属性文档的属性字段及属性值
+		doc2.add(new TextField("title","Thinking in C++ ",Store.YES));
+		doc2.add(new DoubleField("price",78.5, Store.YES));
+		doc2.add(new TextField("desc", "学习C++的必备教材，学习后会有很大的提升",
+								Store.YES));
+		writer.addDocument(doc1);
+		writer.addDocument(doc2);
+		writer.close();
+	}
+
+	@Test
+	public void search() throws IOException {
+		//指定索引文件路径
+		Directory directory = FSDirectory.open(Paths.get("./index"));
+		//  读取索引
+		 DirectoryReader reader = DirectoryReader.open(directory);
+		 //创建搜索器
+		 IndexSearcher search = new IndexSearcher(reader);
+		//声明查询调教
+		 TermQuery query=new TermQuery(new Term("title","java"));
+		//根据分词，返回top n的结果
+		TopDocs topDocs=search.search(query,20);
+		//获取总共找到的记录数
+		int findCount=topDocs.totalHits;
+		//文档得分
+		for(ScoreDoc sd:topDocs.scoreDocs){
+		//获取doc的得分
+		float score=sd.score;
+		//根据docId获取doc对象
+		Document doc=search.doc(sd.doc);
+		System.out.println(doc.get("title")+":"+doc.get("price")+":"+doc.get("desc"));
+		}
+	}
+}
+
+```
+## Solr
+- 一个高性能，采用Java开发，基于Lucene的全文搜索服务器
+- 是运行在Servlet容器（如 Apache Tomcat 或Jetty）的一个独立的全文搜索服务器
+- Solr还对Lucene进行了扩展，提供了比Lucene更为丰富的查询语言，同时实现了可配置、可
+扩展并对查询性能进行了优化，并且提供了一个完善的功能管理界面，是一款非常优秀的全文
+搜索引擎
+
+## 同类产品Elasticsearch
+- 基于Lucene的搜索服务器
+- 比较
+    - 当单纯的对已有数据进行搜索时，Solr更快
+    - 当实时建立索引时, Solr会产生io阻塞，查询性能较差, Elasticsearch具有明显的优势
+    - 随着数据量的增加，Solr的搜索效率会变得更低，而Elasticsearch却没有明显的变化
+
+> Solr的架构不适合实时搜索的应用
+
+## 安装
+- jkd环境
+- 解压
+-  启动
+    -  `./solr start(stop/restart)`
+        -  出现`Started Solr server on port 8983 (pid=3137). Happy searching!`
+            -  成功
+
+- 访问ip:8983
+    - 访问成功
+
+### 自定义 的core admin
+1. 在 `solr-x.x.x/server/solr` 目录下
+    - 创建响应名字的目录\
+        - 在此目录下创建conf和data目录
+            - conf目录下传入指定文件
+
+2. `solr-x.x.x/server/solr-webapp/webapp/WEB-INF/lib`
+    - 将分词器和数据库jdbc放入
+
+3. solr安装目录dist目录下两个jar拷贝到`/solr-x.x.x/server/solrwebapp/webapp/WEB-INF/lib/`
+    -  solr-dataimporthandler-5.2.1.jar
+    -  solr-dataimporthandler-extras-5.2.1.jar
+    - `cp solr-dataimporthandler-* /home/work/solr-x.x.x/server/solr-webapp/webapp/WEB-INF/lib/`
+
+4. `solr-x.x.x/server/solr-webapp/webapp/WEB-INF`下创建classes目录
+    - ik_ext.dic
+    - ik_stopwords.dic
+    - IKAnalyzer.cfg.xml
+
+5. `./solr restart`
+
+6. 添加
+   - 添加成功说明配置完毕
+
+
+## 配置文件详解
+- schema.xml
+```xml
+_version 和 _root 固定配置，不用更改
+id ，title等，是自定义的字段，根据业务来决定
+indexed=true 表示此字段加索引，对于常用的查询字段，可以加索引提高性能。
+stored=true 表示此返回值会被存储
+required=true 表示是必填字段
+multiValued=false 表示不允许多值查找
+```
+
+- dih-config.xml
+
+```xml
+driver="com.mysql.jdbc.Driver"
+//注意修改
+url="jdbc:mysql://192.168.234.1:3306/jtdb"
+user="root"
+password="root"
+batchSize="100"
+autoCommit="false" />
+<dataSource type="JdbcDataSource"
+<dataConfig>
+<entity name="item" pk="id"
+<document name="item">
+ query="SELECT id,title,sell_point,price,num,barcode,image,cid,`status`,created,updated FROM
+tb_item"
+transformer="RegexTransformer">
+</entity>
+</document>
+ deltaQuery="SELECT id,title,sell_point,price,num,barcode,image,cid,`status`,created,updated
+FROM tb_item WHERE updated &gt; date_add(str_to_date('${dih.last_index_time}','%Y-%m-%d %H:%i:%
+s'),interval 8 hour)"
+</dataConfig>
+```
+## 相关连接
+- 官网：http://lucene.apache.org/
+- 查看索引工具:https://github.com/DmitryKey/luke
+
