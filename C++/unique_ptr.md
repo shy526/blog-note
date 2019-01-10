@@ -120,10 +120,11 @@ void arrayPtr(){
     for (int i = 0; i < max; ++i) {
         cout<<arrayUptr[i]<<endl;
     }
-    shared_ptr<int []> arraySptr(new int[max]{3,4});
+    shared_ptr<int []> arraySptr(new int[max]{3,4},
+    [](int *p) {cout<<"删除器被调用"<<endl;delete [] p;});
     for (int j = 0; j <max ; ++j) {
         int i = *(arraySptr.get() + j);
-        cout<<"i="<<i<<endl;
+        cout << "i=" << i << endl;
     }
 }
 ```
