@@ -1,9 +1,11 @@
 # 指针
+
 - 简单理解就是一个指向内存地址的变量
   - 既java中的引用类型
     - 当然这是java包装好的指针
 
 ## 指针声明
+
 - type * var_name
   - `int * p_a;`
     - 指向int类型的指针
@@ -11,6 +13,7 @@
 ## 指针例子
 
 - 指针基本了解
+
 ```c
 #include <stdio.h>
 int main() {
@@ -96,6 +99,7 @@ int main() {
 ```
 
 - 指向指针的指针
+
 ```c
 #include <stdio.h>
 int main() {
