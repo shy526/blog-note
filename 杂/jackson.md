@@ -73,7 +73,7 @@
     - `JsonNode.getElements()`
       - 获取多个值
     - `public <T> T treeToValue(TreeNode n, Class<T> valueType)`
-      -  将树转换为Java对象
+      - 将树转换为Java对象
 
 ## 流式API
 

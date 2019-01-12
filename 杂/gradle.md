@@ -11,7 +11,7 @@
 - path
   - 添加 `;%GRADLE_HOME%\bin;`
 
-## gradle中的groovy 
+## gradle中的groovy
 
 - 基于java虚拟机的动态语言
 - 兼容java语法
@@ -54,7 +54,7 @@
 ```Groovy
 compile ('org.hibernate:hibernate-core:3.6.3.Final') {
     //排包
-    exclude group:'org.slf4j',module:'slf4j-api' 
+    exclude group:'org.slf4j',module:'slf4j-api'
 }
 ```
 
