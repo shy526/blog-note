@@ -13,7 +13,7 @@
             - `yum install libXss*  -y`
             - `yum install libindicator*`
             - `yum install libappindicator-gtk3*`
-3. `rpm -qa |grep chrome` 
+3. `rpm -qa |grep chrome`
     - 检查一下是否已经安装
 
 ## xvfb
