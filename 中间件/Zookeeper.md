@@ -1,33 +1,35 @@
 # zookeeper 概述
+
 - 分布式服务框架，主要是用来解决分布式应用中常见的问题
-    - 集群中数据的 一致性、统一命名服务、集群中机器节点的状态同步服务、集群管理、分布式应用配置项的管 理等
+  - 集群中数据的 一致性、统一命名服务、集群中机器节点的状态同步服务、集群管理、分布式应用配置项的管 理等
 
 - 根据Google的一篇论文《The Chubby lock Service for loosely coupled distributed system》做的开源实现。
 
 ## 安装
+
 - 关闭防火墙
-    - `service iptables stop`
+  - `service iptables stop`
 - 解压
-    - `tar -xvf 文件名`
+  - `tar -xvf 文件名`
 - 配置
-    - 进入`Zookeeper/conf`
-        - 拷贝个`zoo_sample.cfg`
-    - 属性
-        - `dataDir`
-            - 是存放zookeeper集群环境配置信息
-            - 默认:`/tmp/zookeepe`
-                - 但是会被清空
-                - 修改即可
-                - > 指定的目录需要手动创建
-        - `clientport`
-            - 客户端链接服务端
-                - 默认:`2181`
+  - 进入`Zookeeper/conf`
+    - 拷贝个`zoo_sample.cfg`
+  - 属性
+    - `dataDir`
+      - 是存放zookeeper集群环境配置信息
+      - 默认:`/tmp/zookeepe`
+        - 但是会被清空
+        - 修改即可
+        - > 指定的目录需要手动创建
+  - `clientport`
+    - 客户端链接服务端
+      - 默认:`2181`
 
 - 配置
-    - 2888原子广播端口，3888选举端口
-    - 有几个节点，就配置几个server,
+  - 2888原子广播端口，3888选举端口
+  - 有几个节点，就配置几个server
 
-```
+```cnf
 server.1=192.168.234.10:2888:3888
 
 server.2=192.168.234.11:2888:3888
@@ -36,6 +38,7 @@ server.3=192.168.234.12:2888:3888
 ```
 
 ## 配置文件说明
+
 ```cnf
 tickTime: zookeeper中使用的基本时间单位, 毫秒值.
 dataDir: 数据目录. 可以是任意目录.
@@ -73,7 +76,8 @@ initLimit: zookeeper集群中的包含多台server, 其中一台为leader, 集�
     - `get /zk`
     - 确认 znode 是否包含我们所创建的字符串
     - 信息详细
-    ```
+
+    ```cnf
     hello1609   数据
     cZxid = 0x2
     ctime = Mon Mar 14 10:32:08 PDT 2016  创建此节点的时间戳
@@ -86,9 +90,11 @@ initLimit: zookeeper集群中的包含多台server, 其中一台为leader, 集�
     dataLength = 9  数据大小
     numChildren = 0  子节点数量
     ```
+
 5. 修改文件内容
-    - `set /zk "zkbak" `
+    - `set /zk "zkbak"`
     - 对 zk 所关联的字符串进行设置
+
 6. 删除文件
     - `delete /zk`
         - 只能删除没有子节点的节点
@@ -98,37 +104,38 @@ initLimit: zookeeper集群中的包含多台server, 其中一台为leader, 集�
 8. 帮助命令
     - `help`
 
-
 ## 节点类型
 
 - 普通持久节点
-    - `create  /zk01 helllo`
+  - `create  /zk01 helllo`
 - 普通临时节点
-    - 创建此临时节点的客户端失去和zk连接后，此节点消失
-    -  `create -e /zk02 12345`
+  - 创建此临时节点的客户端失去和zk连接后，此节点消失
+    - `create -e /zk02 12345`
 - 顺序持久节点
-    - 会根据用户指定的节点路径，自动分配一个递增的顺序号
+  - 会根据用户指定的节点路径，自动分配一个递增的顺序号
     - `create -s /zk03  12234`
 - 顺序临时节点
-    - `create -s -e /zk02 12354`
+  - `create -s -e /zk02 12354`
 
 ## API
--  `ZooKeeper(String connectString, int sessionTimeout, Watcher watcher,long sessionId, byte[] sessionPasswd, boolean canBeReadOnly)`
-   - connecString *
-     -  ip:port格式的字符串,多个使用,号相隔
-   - sessionTimeout
-     - 超时时间
-     - 影响心跳间隔
-    - watcher *
+
+- `ZooKeeper(String connectString, int sessionTimeout, Watcher watcher,long sessionId, byte[] sessionPasswd, boolean canBeReadOnly)`
+  - connecString *
+    - ip:port格式的字符串,多个使用,号相隔
+  - sessionTimeout
+    - 超时时间
+    - 影响心跳间隔
+   - watcher *
       - 监听器
-    - sessionId
-    - sessionPasswd
-    -  canBeReadOnly
-      - 是否只读
+  - sessionId
+  - sessionPasswd
+  - canBeReadOnly
+    - 是否只读
 
 > *号为必须要的参数
 
 ## ACL权限设置
+
 - `addauth digest username:password`
   - 添加一个用户
 - 使用 `setACL digest username:password`
@@ -150,5 +157,6 @@ initLimit: zookeeper集群中的包含多台server, 其中一台为leader, 集�
       return zooKeeper;
   }
 ```
+
 > "auth"方式,必须保证有一个用户被添加 否则抛出异常
 
