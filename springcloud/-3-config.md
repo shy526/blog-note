@@ -223,3 +223,80 @@ encrypt:
   - 表示从git中读取
   - 默认false
   - 作为嵌入式服务时,官方建议开启
+
+## configServer 自动刷新
+
+- 添加bus 依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+```
+
+- application.yml
+
+```yml
+spring:
+  application:
+    name: config-01
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/sunjiaqing/spring-cloud-demo-config.git
+          username: sundada214@outlook.com
+          password: 
+          basedir: D:\project\spring-cloud-demo\gitbase
+  rabbitmq:
+    addresses: 192.168.239.129
+    port: 5672
+management:
+  endpoints:
+    web:
+      exposure:
+        # 开放所所有端口
+        include: '*'
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+server:
+  port: 9999
+
+```
+
+- 查看消息队列是否已经生成即可
+
+>`client`端也需要配置`spring.rabbitmq`(否则无法完成刷新),也需要依赖`bus`组件
+
+- `client`添加刷新注解
+  - `@RefreshScope`
+  - 详细代码如下
+
+```java
+@Controller
+@RefreshScope
+public class TestController {
+    @Value("${person.name}")
+    private String name;
+    @Value("${person.age}")
+
+    private Integer age;
+    @GetMapping("person")
+    @ResponseBody
+    public Map<String,Object> getPerson(){
+        HashMap<String, Object> stringObjectHashMap = new HashMap<>();
+        stringObjectHashMap.put("age",age);
+        stringObjectHashMap.put("name",name);
+        return stringObjectHashMap;
+    }
+}
+```
+
+- 手动访问`http://{ip}:{port}/actuator/bus-refresh`
+  - 进行广播
+  - 将url配置到`git`上的`webHook`,每一次`push`都调用次url即可
+
+> 刷新指定`client`端,`http://{ip}:{port}/actuator/bus-refresh?destination=服务名:[port:**(通配符)]` 
