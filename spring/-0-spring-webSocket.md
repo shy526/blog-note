@@ -1,5 +1,7 @@
 # webSocket
 
+![架构](assets/2019-02-22-19-17-00.png)
+
 ## 依赖
 
 ```yml
@@ -13,6 +15,8 @@
 
 - `@EnableWebSocketMessageBroker`
   - 使用`stomp` 协议
+
+- 配置类
 
 ```java
 @Configurable
@@ -135,3 +139,68 @@ public WebSocket error(Exception e){
     return webSocket;
 }
 ```
+
+## 常用注入类
+
+- `SimpMessagingTemplate`
+  - 用于发送消息
+
+- `SimpUserRegistry`
+  - 用于获取连接上的用户集合
+  - 需要入方向的连接器实现
+
+- 入方向拦截器
+
+```java
+@Component
+public class RegisterInterceptor implements ChannelInterceptor {
+    @Autowired
+    private PageStatService pageStatService;
+    @Override
+    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+        //这里是个新对象
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
+        StompCommand command = headerAccessor.getCommand();
+        if (command != null) {
+            switch (command) {
+                case CONNECT: {
+                    //这个获取的是引用
+                    StompHeaderAccessor accessorRef = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                    //自定义对象
+                    PageStatPo pageStat = new PageStatPo();
+                    pageStat.setBeginTime(new Date());
+                    IRegistry iRegistry = new IRegistry(accessorRef.getSessionId(),pageStat);
+                    // 这里注入 对象 才能在 SimpUserRegistry 中获取到
+                    accessorRef.setUser(iRegistry);
+                    break;
+                }
+                case DISCONNECT: {
+                    StompHeaderAccessor accessorRef = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+                    IRegistry registry =(IRegistry)accessorRef.getUser();
+                    PageStatPo custom = registry.getCustom(PageStatPo.class);
+                    custom.setEndTime(new Date());
+                    custom.setStayTime(custom.getEndTime().getTime()-custom.getBeginTime().getTime());
+                    //pageStatService.insertPageStat(custom);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        return message;
+    }
+
+}
+```
+
+>> 自定义对象需要实现 `Principal`
+
+## 心跳设置
+
+- 需要一个 `ThreadPoolTaskScheduler` 对象
+  - 作为响应或发送心跳
+
+## 相关连接
+
+[官方文档](https://docs.spring.io/spring-session/docs/current/reference/html5/guides/boot-websocket.html#exploring-the-websocket-sample-application)
