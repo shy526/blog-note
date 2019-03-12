@@ -64,6 +64,7 @@ server:
   - `name` 文件名
   - `profiles` 环境
     - 不存在时访问的是name
+
 > 所有`name-profiles.[properties|yml|json]`的都会与`name.[properties|yml|json]`合并,在返回出来
 
 ## 快速开始 configClient
