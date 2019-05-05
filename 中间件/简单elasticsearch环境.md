@@ -1,7 +1,7 @@
 # 搭建elasticsearch(windos)
 
-
 ## 搭建elasticsearch
+
 - 修改`{elasticsearch_home}/config/elasticsearch.yml`
 
 ```yml
@@ -26,11 +26,11 @@ http.cors.allow-origin: "*"
  `{elasticsearchHome}/bin/elasticsearch.bat`
 
 - 测试
-    - `http://{network.host}:{http.port}/` 
-        - 查看是否配置成功
-
+  - `http://{network.host}:{http.port}/`
+    - 查看是否配置成功
 
 ## 搭建 `elasticsearch-head`
+
 1. `git clone git://github.com/mobz/elasticsearch-head.git`
 2. `cd elasticsearch-head`
 3. `npm install`
@@ -40,31 +40,32 @@ http.cors.allow-origin: "*"
             - 修改为`network.host`
     - `{elasticsearch-head_home}/Gruntfile.js`
         - 该文件可以修改端口号等配置信息
-```js
-connect: {
-    server: {
-        options: {
-            port: 9100,
-            base: '.',
-            keepalive: true
+
+    ```js
+    connect: {
+        server: {
+            options: {
+                port: 9100,
+                base: '.',
+                keepalive: true
+            }
         }
     }
-}
-```
+    ```
 
 5. `npm run start`
-6. 打开 `http://localhost:9100/`
-> 需要`node`环境
 
+6. 打开 `http://localhost:9100/`
+
+> 需要`node`环境
 
 ## 搭建 `logstash`
 
 - 创建配置文件
+
 ```config
 input {
-    stdin {
-    
-    }
+    stdin {}
     jdbc {
        # mysql 数据库链接,mybatis为数据库名
       jdbc_connection_string => "jdbc:mysql://127.0.0.1:3306/weidian_cms"
@@ -99,6 +100,8 @@ output {
     }
 }
 ```
+
 > 详细查看文档
+
 - 启动
-    - `{logstash_home}/bin/logstash -f {logstash.conf_path}`
+  - `{logstash_home}/bin/logstash -f {logstash.conf_path}`
