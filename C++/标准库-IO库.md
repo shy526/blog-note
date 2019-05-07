@@ -13,7 +13,7 @@
     | sstream  | istringstream | wistringstream 从string 中读取数据 |
     |   ----   | ostringstream | wostringstream 向string 中写入数据 |
     |   ----   | stringstream  |      wstringstream 读写string      |
- - 为了支持宽字符语言的语言,还定义了一组以`w`的函数和类型
+- 为了支持宽字符语言的语言,还定义了一组以`w`的函数和类型
 
  > io对象无法拷贝或者赋值
 
@@ -37,18 +37,17 @@
 >badbit 被置位时流无法再使用,表示系统级错误
 
 ## 缓冲区
+
 - 程序正常结束
 - 缓冲区满时,需要刷新换成
 - 使用`std:endl`来刷新换从曲
 - 每个输出操作之后可以使用操纵符`unitbuf`来清空缓冲区
-    - `cout<<unitbuf`
-    - `nounitbuf`
-        - 回到正常的缓冲操作
-    
+  - `cout<<unitbuf`
+  - `nounitbuf`
+    - 回到正常的缓冲操作
 - 一个输出流可能关联到另一个流
-    - `cin.tie(&cerr)`
-        - 返回指向输出流的指针
-
+  - `cin.tie(&cerr)`
+    - 返回指向输出流的指针
 
 ## 文件输入输出
 
@@ -62,8 +61,6 @@
 |    fstm.opens(s)     |        打开名为s的文件并将文件与fstrm绑定        |
 |    fstrm.close()     |              关闭与fstrm绑定的文件               |
 |   fstrm.is_open()    | 返回一个bool,指出fstrm关联的文件是否成功打开与否 |
-
-
 
 - 文件模式
 
@@ -106,6 +103,7 @@ int main(){
 ```
 
 ## string流
+
 |                 |                 描述                  |
 |:---------------:|:-------------------------------------:|
 |  sstream strm   |          未绑定stringstream           |
@@ -118,29 +116,27 @@ int main(){
 ```c++
 int main()
 {
-	string path ":" "d:/Users/admin/Desktop/test.txt";
-	ifstream input(path);
-	input.tie(&cout);
-	if (!input) {
-		cout << "未打开"<< endl;
-	}
-	string line;
-	int i":"0;
-	while (getline(input,line)){
-		istringstream record(line);
-		string value;
-		record >> value;
-		cout << "name:"<<value << endl;
-		record >> value;
-		cout << "birth:" << value << endl;
-		record >> value;
-		cout << "pay:" << value << endl;
-		
-		i++;
-	}
-	input.close();
-	system("pause");
+    string path ":" "d:/Users/admin/Desktop/test.txt";
+    ifstream input(path);
+    input.tie(&cout);
+    if (!input) {
+        cout << "未打开"<< endl;
+    }
+    string line;
+    int i":"0;
+    while (getline(input,line)){
+        istringstream record(line);
+        string value;
+        record >> value;
+        cout << "name:"<<value << endl;
+        record >> value;
+        cout << "birth:" << value << endl;
+        record >> value;
+        cout << "pay:" << value << endl;
+        i++;
+    }
+    input.close();
+    system("pause");
     return 0;
 }
-     
 ```
