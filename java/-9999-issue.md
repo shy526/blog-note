@@ -20,4 +20,10 @@ WHERE
         )
 ```
 
-> DUAL 虚拟表
+> DUAL虚拟表
+
+## tomcat无法启动
+
+- org.apache.catalina.loader.WebappClassLoaderBase loadClass
+  - 依赖的jar的版本错误
+  - 依赖问题
