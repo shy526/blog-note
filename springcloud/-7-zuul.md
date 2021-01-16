@@ -6,7 +6,7 @@
 
 ## 快速开始
 
-- mave你配置
+- mave配置
 
     ```xml
     <dependencies>
@@ -131,12 +131,12 @@ public abstract class MyAbstractFilter extends ZuulFilter {
 
 |              配置项               |           说明            |
 |:---------------------------------:|:-------------------------:|
+|       zuul.ignored-patterns       | 忽略指定的路径,支持通配符 |
+|       zuul.ignored-services       |      忽略指定的服务       |
 |      zuul.routes.{routename}      |         路由名称          |
 |   zuul.routes.{routename}.path    |  要路由的路径,支持通配符  |
 | zuul.routes.{routename}.serviceId | 注册在Eureka的ServiceName |
 |    zuul.routes.{routename}.url    |       指定Url来路由       |
-|       zuul.ignored-services       |      忽略指定的服务       |
-|       zuul.ignored-patterns       | 忽略指定的路径,支持通配符 |
 
 ## 熔断
 
