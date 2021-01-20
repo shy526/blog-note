@@ -208,9 +208,96 @@ management:
 
 获取路由信息
 
+## nacos
+
+实现动态服务发现 服务配置 服务元数据及流量管理
+
+以下若有错误望指正
+### 安装
+
+[nacos官方文档](https://nacos.io/zh-cn/docs/quick-start.html)
+
+[nacos下载](https://github.com/alibaba/nacos/releases)
+
+直接解压启动 startup.cmd -m standalone 单例启动即可
+
+访问 `http://127.0.0.1:8848/nacos/index.html`
+
+> 默认账户密码nacos nacos
+
+### nacos动态配置的使用
+
+- maven
+
+```xml
+<properties>
+    <!--2.2.4.RELEASE有个线程池的bug,第一次更新后无法在更新配置-->
+    <nacos.version>2.2.3.RELEASE</nacos.version>
+</properties>
+<dependencies>
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        <version>${nacos.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+```
+
+> 不要用2.2.4 不要用2.2.4
+
+- bootstrap.yml
+
+```yml
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: "127.0.0.1:8848"
+        file-extension: yaml
+        timeout: 5000
+        config-long-poll-timeout:
+        #group: 
+  application:
+    name: nacos-config
+server:
+  port: 8766
+```
+
+> bootstrap.yml 用来在程序引导时执行 优先于application.yml
+
+- 测试代码
+
+```java
+@RestController
+@RequestMapping("/config")
+@RefreshScope
+public class TestController {
+    @Value("${useLocalCache:测试}")
+    private String testStr;
+    @RequestMapping("/get")
+    public String get() {
+        System.out.println("test = " + testStr);
+        return testStr;
+    }
+}
+```
+
+>`@RefreshScope` 一种特殊的scope实现 用来实现配置 实例热加载
+>> 一般配合spring cloud bus 实现刷新
+
+### 将nacos作为注册中心(待续)
+
+## zuul扩展(非demo向的,一些进阶的例子,有空的话)
+
 ## 参考
 
-[测试项目](https://github.com/sunjiaqing/spring-cloud-zuul-demo)
+[测试demo](https://github.com/sunjiaqing/spring-cloud-zuul-demo)
+
+[nasco官网](https://nacos.io/zh-cn/index.html)
 
 [zuul配置项](https://cloud.spring.io/spring-cloud-static/Finchley.SR4/single/spring-cloud.html#_router_and_filter_zuul)
 
