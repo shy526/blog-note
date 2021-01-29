@@ -260,7 +260,7 @@ spring:
         server-addr: "127.0.0.1:8848"
         file-extension: yaml
         timeout: 5000
-        config-long-poll-timeout:
+        #config-long-poll-timeout:
         #group: 
   application:
     name: nacos-config
@@ -290,9 +290,148 @@ public class TestController {
 >`@RefreshScope` 一种特殊的scope实现 用来实现配置 实例热加载
 >> 一般配合spring cloud bus 实现刷新
 
-### 将nacos作为注册中心(待续)
+### 将nacos作为注册中心
 
-## zuul扩展(非demo向的,一些进阶的例子,有空的话)
+- maven
+
+```java
+<dependencies>
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+            <version>2.2.4.RELEASE</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
+> 注意版本对应
+>> [对应版本wiki](https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E)
+
+- application.yml
+
+```yml
+server:
+  port: 8767
+spring:
+  application:
+    name: nacos-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+```
+
+- 启动类
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class NacosClientApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(NacosClientApplication.class, args);
+    }
+}
+
+```
+
+ zuul切换注册中心
+
+- maven修改 application.yml 启动类 三个修改参照 上方
+
+> application.yml中 serviceId 参数 修改为对应服务名 即可正常路由和熔断
+
+查看nacos的管理界面服务列表就会出现该服务
+>> 如果没有任何一个路径不会显示在服务列表里
+
+## zuul使用nacos实现动态路由配置一种方式
+
+- maven添加依赖
+
+```xml
+<dependency>
+  <groupId>com.alibaba.cloud</groupId>
+  <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+  <version>2.2.3.RELEASE</version>
+</dependency>
+```
+
+- 添加一个配置类
+
+```java
+@Configurable
+public class ZuulConfig {
+    @Bean
+    @RefreshScope
+    @ConfigurationProperties("zuul")
+    @Primary
+    public ZuulProperties zuulProperties() {
+        return new ZuulProperties();
+    }
+}
+```
+
+> @rimary 有相同类型时优先注入 @RefreshScope 保证数据刷新
+
+- bootstrap.yml
+
+```yml
+spring:
+  application:
+    name: zuul-01
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        timeout: 5000
+      discovery:
+        server-addr: 127.0.0.1:8848
+```
+
+- application.yml
+
+```yml
+server:
+  port: 8762
+logging:
+  level:
+    root: error
+management:
+  endpoints:
+    web:
+      exposure:
+        include: routes,filters
+```
+
+- nacos配置上 zuul-01.yaml
+
+```yml
+zuul:
+  routes:
+    uuu:
+      path: /api2/**
+      serviceId: nacos-client
+```
+
+> 在nacos修改配置 在使用端点查看路由信息`{zuulIp}/actuator/routes` 验证
+
+## zuul扩展
+
+### 令牌桶限流
 
 ## 参考
 
