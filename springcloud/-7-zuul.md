@@ -433,6 +433,111 @@ zuul:
 
 ### 令牌桶限流
 
+- maven
+
+```xml
+<dependency>
+  <groupId>com.google.guava</groupId>
+  <artifactId>guava</artifactId>
+  <version>30.1-jre</version>
+</dependency>
+```
+
+- 过滤器
+
+```java
+@SuppressWarnings("UnstableApiUsage")
+@Component
+public class RateLimitFilter extends MyAbstractFilter {
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10.0D);
+    RateLimitFilter(RouteLocator routeLocator, UrlPathHelper urlPathHelper) {
+        super(routeLocator, urlPathHelper);
+    }
+    @Override
+    public String filterType() {
+        return FilterConstants.PRE_TYPE;
+    }
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+    @Override
+    public boolean shouldFilter() {
+        RequestContext context = RequestContext.getCurrentContext();
+         String id ="threadId="+Thread.currentThread().getId()+"-->"+System.currentTimeMillis()+"-->";
+        if (!RATE_LIMITER.tryAcquire()) {
+            context.setSendZuulResponse(false);
+            context.setResponseStatusCode(200);
+            HttpServletResponse response = context.getResponse();
+            response.addHeader("Content-Type","text/plain;charset=UTF-8");
+            context.setResponseBody("稍后");
+            System.out.println(id+"pre限流限制");
+            return false;
+        }
+        System.out.println(id+"pre限流通过");
+        return true;
+    }
+    @Override
+    public Object run() {
+        return null;
+    }
+}
+```
+
+- 测试方法
+
+```java
+    @Test
+    void rateLimitFilterTest() {
+        int total = 200;
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(total);
+        CountDownLatch countDownLatch = new CountDownLatch(total);
+        AtomicInteger s = new AtomicInteger(0);
+        AtomicInteger f = new AtomicInteger(0);
+        //每(1/?*1000)毫秒秒方放一个令牌
+        for (int i = 1; i <= total; i++) {
+            new Thread(() -> {
+                try {
+                    cyclicBarrier.await();
+                    ResponseEntity<String> forEntity = restTemplate.getForEntity("http://localhost:8762/api2/test/get?test=xxxxx", String.class);
+                    String body = forEntity.getBody();
+                    if ("稍后".equals(body)) {
+                        f.getAndIncrement();
+                    } else {
+                        s.getAndIncrement();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    countDownLatch.countDown();
+                }
+            }).start();
+        }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("成功" + s.get());
+        System.out.println("失败" + f.get());
+    }
+}
+```
+
+- 上述的测试程序结果
+
+| permitsPerSecond | 线程数  | 成功 | 失败 |
+|:----------------:|:------:|:----:|:----:|:----:|
+|       100        |  200     | 117  |  83  |
+|       100        |  200     | 124  |  76  |
+|       100        |  500     | 130  |  370  |
+|       100        |  500     | 134  |  366  |
+|       100        |  1000     | 156  |  844  |
+|       100        |  1000     | 158  |  842  |
+
+在比较集中的并发情况下有令牌超出的情况出现(可能出现跨秒的情况)
+
 ## 参考
 
 [测试demo](https://github.com/sunjiaqing/spring-cloud-zuul-demo)
@@ -448,3 +553,7 @@ zuul:
 [动态路由源码分析](https://zhuanlan.zhihu.com/p/58207504)
 
 [zuul生命周期](http://reader.epubee.com/books/mobile/9a/9adaecfdfecd6b8da7997c772fa46198/text00146.html)
+
+[令牌桶原理](https://www.cnblogs.com/jianhaoscnu/p/13385180.html)
+
+[RateLimiter 相关文档](http://ifeve.com/guava-ratelimiter/)
