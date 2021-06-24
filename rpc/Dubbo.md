@@ -383,8 +383,8 @@
         <!-- 提供方应用信息，用于计算依赖关系 -->
             <dubbo:application name="addService" />
         <!--  使用multicast广播注册中心暴露服务地址 -->
-        <!-- <dubbo:registry address="multicast://224.5.6.7:1234"/>	 -->
-            <dubbo:registry address="zookeeper://192.168.119.141:2181?backup=192.168.119.139:2181,192.168.119.140:2181" />
+        <!-- <dubbo:registry address="multicast://224.5.6.7:1234"/>-->
+            <dubbo:registry address="zookeeper://192.168.119.141:2181?backup=192.168.119.139:2181,192.168.119.140:2181"/>
 
             <!-- 用dubbo协议在20880端口暴露服务 -->
             <dubbo:protocol name="dubbo" port="20880" />
