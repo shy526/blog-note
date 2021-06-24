@@ -234,8 +234,9 @@
 - 向多个队列传递消息
 - X表示Exchanger 交换机，此处交换机的type类型为fanout
   - 还需要将交换机和两个队列进行 binding（绑定）
+
 > 没有队列绑定到交换中，消息将丢失，但这对我们来说是可以的;如果没有消费者在听，我们可以安全地丢弃这
-个消息。
+个消息
 
 - Demo
 
@@ -307,9 +308,11 @@
         }
     }
 ```
+
 > 先启动消费者不让消息丢失
 
 ## 路由模式(Routing)
+
 ![img](https://i.imgur.com/EJ4VDAE.png)
 
 ![img](https://i.imgur.com/CNdyOAF.png)
@@ -388,6 +391,7 @@
 ```
 
 ## 主题模型（topics)
+
 ![img](https://i.imgur.com/lPjOh2O.png)
 
 - topic类型的交换机支持更灵活的路由键（支持通配符）

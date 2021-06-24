@@ -300,4 +300,4 @@ public class TestController {
   - 进行广播
   - 将url配置到`git`上的`webHook`,每一次`push`都调用次url即可
 
-> 刷新指定`client`端,`http://{ip}:{port}/actuator/bus-refresh?destination=服务名:[port:**(通配符)]` 
+> 刷新指定`client`端,`http://{ip}:{port}/actuator/bus-refresh?destination=服务名:[port:**(通配符)]`

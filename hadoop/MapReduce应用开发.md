@@ -1,4 +1,5 @@
 # 用于配置API
+
 - `org.apache.hadoop.conf.Configuration`
   - 代表配置属性和取值的集合
   - 属性用String命名,值的类型是多样的
@@ -12,9 +13,11 @@
     - `${key}`
 - 使用`hadoop fs -conf 配置文件目录 指令`
   - 来连接hadoop
+
 > HADOOP_USER_NAME 环境变量来显示设定Hadoop用户名
 
 ## 辅助类
+
 - `GenericOptionsParser`
   - 解释命令行选项
 - `Tool`

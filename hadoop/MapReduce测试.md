@@ -31,18 +31,21 @@ public void proocessesValidRecord() throws IOException {
 ```
 
 ## 拆解map
+
 - 解析部分重构为parser类,对parser类进行单元测试即可
 
-## 本地运行测试数据 
--     - 需要继承 configured 实现Tool
+## 本地运行测试数据
+
+- 需要继承 configured 实现Tool
 - `hadoop jar xx.jar -conf 配置文件`
-    - `mapreduce.framework.name`要求被设置为`local`
-- `hadoop jar xx.jar -fs file:///input -jt xxxoutput `
-    - 使用选项来进行
+  - `mapreduce.framework.name`要求被设置为`local`
+- `hadoop jar xx.jar -fs file:///input -jt xxxoutput`
+  - 使用选项来进行
 
 ## 测试驱动程序
+
 - 利用Tool,Configuration类进行编写测试程序
-    - 需要继承 configured 实现Tool
+  - 需要继承 configured 实现Tool
 
 ```java
   /* 测试驱动
@@ -73,11 +76,11 @@ public int  test3(Tool tool,String input,String output){
 
 ```
 
-
 ## mini集群测试
+
 - 百度吧 太烦了还不如上环境
 
 ## hadoop web 界面
+
 - http://resource-manager-host:8088
 - 浏览作业信息,跟踪作业运行进度,查找完成统计信息和日志
-

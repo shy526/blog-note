@@ -159,4 +159,3 @@ initLimit: zookeeper集群中的包含多台server, 其中一台为leader, 集�
 ```
 
 > "auth"方式,必须保证有一个用户被添加 否则抛出异常
-

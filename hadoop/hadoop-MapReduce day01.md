@@ -1,25 +1,26 @@
 # MapReduceDemo
 
 ## 总结
- - CSDN 气象数据找出最高温度
 
-	1.  数据准备阶段
-  	- 准备不够充分
-  		- 下载了损坏的数据
-  			- 不够细心
+- CSDN 气象数据找出最高温度
+  1. 数据准备阶段
+     - 准备不够充分
+     - 下载了损坏的数据
+     - 不够细心
 
   2. HadoopApi不够熟悉
-  		- 新老api混用导致错误
-		  -  hadoop权威一书中有错误导致误导
+     - 新老api混用导致错误
+        - hadoop权威一书中有错误导致误导
 
-	3. 打包jar
-		- 缺少主类
-			-  对jar打包不够熟悉
+  3. 打包jar
+      - 缺少主类
+        - 对jar打包不够熟悉
 
-	4. hadoop的运行方式不了解
-  		-  被网络上的各种资料误导
+  4. hadoop的运行方式不了解
+     - 被网络上的各种资料误导
 
 ## 打包jar问题
+
 - 引入maven插件
   - maven-shade-plugin
 
@@ -27,28 +28,28 @@
 
 ```xml
 <build>
-	<plugins>
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-shade-plugin</artifactId>
-			<version>2.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-							<goals>
-								<goal>shade</goal>
-							</goals>
-								<configuration>
-									<transformers>
-										<transformerimplementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-											<mainClass>HadoopDemo.MaxTemperature</mainClass>
-										</transformer>
-									</transformers>
-								</configuration>
-					</execution>
-				</executions>
-		</plugin>
-	</plugins>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                                <configuration>
+                                    <transformers>
+                                        <transformerimplementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                            <mainClass>HadoopDemo.MaxTemperature</mainClass>
+                                        </transformer>
+                                    </transformers>
+                                </configuration>
+                    </execution>
+                </executions>
+        </plugin>
+    </plugins>
 </build>
 ```
 
@@ -181,7 +182,6 @@ public class MaxTemperature {
         - output文件夹必须不存在
       - 查看执行结果
 
-
 ## 一些MapReduce概念
 
 - 数据流
@@ -201,16 +201,14 @@ public class MaxTemperature {
 
 - 图解
 
- ![](assets/markdown-img-paste-20171223200501895.png)
+ ![ ](assets/markdown-img-paste-20171223200501895.png)
 
 > 尽量避免map和reduce任务之间的数据传输
 
+## combiner函数
 
- ## combiner函数
- - 属于优化方案
- - 针对map任务的输出指定一个combiner
- - combiner无法取代Reduce
- - 一般与reduce处理逻辑相同只要在`调度`中
-   - `job.setcombinerClass(Reduce.class)`即可
-
- 
+- 属于优化方案
+- 针对map任务的输出指定一个combiner
+- combiner无法取代Reduce
+- 一般与reduce处理逻辑相同只要在`调度`中
+  - `job.setcombinerClass(Reduce.class)`即可

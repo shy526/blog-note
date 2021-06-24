@@ -1,6 +1,7 @@
 # IO 操作
 
 ## HDFS数据完整性
+
 - 会对所有写入数据计算校验和,并在读取数据时验证校验和
   - `dfs.bytes-per-checksum`指定的字节的数据计算校验的和
     - 默认512,有CRC-32校验
@@ -24,22 +25,27 @@
   - 禁用和校验
     - 使用`RowLocalFileSystem`对象
   - 全局校验和验证
-      - 将`fs.flie.impl`替换为`org.apache.hadoop.fs.RawLocalFileSystem`
-      - 新建一个`RowLocalFileSystem`实例
+    - 将`fs.flie.impl`替换为`org.apache.hadoop.fs.RawLocalFileSystem`
+    - 新建一个`RowLocalFileSystem`实例
+
       ```java
         Configurtion conf=...
         FileSystem fs=new RowLocalFileSystem();
         fs.initialize(null,conf);
       ```
+
 - `ChecksumFileSystem`
   - 向无校验和系统中加入校验和
+
   ```java
   FileSystem rawfs=...
   FileSystem checksummedfd= new ChecksumFileSystem(rawfs);
   ```
+
   - raw文件系统可以使用 `ChecksumFileSystem.getRawFileSystem()`来获取
 
 ## 压缩
+
 1. 减少文件所需要的磁盘控件
 2. 加快数据在网络和磁盘上的传输
 
@@ -56,7 +62,7 @@
 
 - 压缩工具
   - `-1`: 优化压缩数度
-  -  `-9`: 优化压缩空间
+  - `-9`: 优化压缩空间
 
 - CodecPool
   -压缩池,反复使用时压缩解压缩时,避免创建这种对象的开销
@@ -84,15 +90,15 @@
     - 使用压缩的类
     - 默认: `DefautCodec`
     - `FileOutputFormat.setOutputCompressorClass(job, GzipCodec.class);`
- - 序列文件
- - `mapreduce.output.fileOutputformat.compress.type`
-   - 控制压缩所使用的格式
-   - 默认:`RECORD`
-     - 针对每条记录进行压缩
-   - `BlOCK`
-     - 针对一组数据压缩
-       - 推荐
-       - `SequenceFileOutputFormat.setOutputCompressionType(job, SequenceFile.CompressionType.BLOCK); `
+  - 序列文件
+  - `mapreduce.output.fileOutputformat.compress.type`
+    - 控制压缩所使用的格式
+    - 默认:`RECORD`
+      - 针对每条记录进行压缩
+    - `BlOCK`
+      - 针对一组数据压缩
+        - 推荐
+        - `SequenceFileOutputFormat.setOutputCompressionType(job, SequenceFile.CompressionType.BLOCK);`
 - map中任务中使用压缩
   - `mapreduce.map.output.compress`
     - 对map任务输出进行压缩
@@ -103,7 +109,8 @@
     - 默认: `DefaultCodec`
     - `org.apache.hadoop.conf.Configuration.setClass(Job.MAP_OUTPUT_COMPRESS_CODEC,GzipCodec.class, CompressionCodec.class);`
 
-# 序列化
+## 序列化
+
 - 序列化
   - 实质结构化的对象转化为字节流以便在网络上传输或写到磁盘进行永久存储的过程
 - 反序列化
@@ -125,6 +132,7 @@
       - 以不同的语言读写数据
 
 ## `writable`
+
 - hadoop的序列化格式
 - 紧凑快速,不太容易被其他语言所扩展
 
@@ -149,11 +157,11 @@
     - 提供原始`compare()`方法的比较
     - 充当`RawComparator`的实例工厂
   - 实例
-    -  hadoop-demo中的writable-demo中test2的测试方法
+    - hadoop-demo中的writable-demo中test2的测试方法
 
 ### `Writable 继承结构`
 
-![](assets/markdown-img-paste-20180216160237438.png)
+![ ](assets/markdown-img-paste-20180216160237438.png)
 
 - `Writable`类对所有的java基本类型进行封装
   - 提供`get()`,`set()`方法用于读取和存放
@@ -173,11 +181,11 @@
     - `getLength()`方法返回的是UTF-8变法的字节数
     - `find()`方法返回的是偏移量
     - 与`java.lang.String`对比实例
-      -  hadoop-demo中的writable-demo中test3的测试方法
+      - hadoop-demo中的writable-demo中test3的测试方法
   - 迭代
     - 利用字节偏移量实现的位置索引
     - 实例
-      -  hadoop-demo中的writable-demo中test4的测试方法
+      - hadoop-demo中的writable-demo中test4的测试方法
   - 可变性
 - `BytesWritable`
   - 针对二进制数组的封装
@@ -217,6 +225,7 @@
       - Hashpartitioner通常用hashCode方法来选择reduce分区
 
 ## 序列化框架
+
 - MapRecuce可以使用任何类型
   - 只要能有一种机制对每个类型与二进制表示的来回转换就可以
 - 为了支持这一机制,Hadoop有一个针对可替换序列化框架(serialization frameword)Api
@@ -228,7 +237,7 @@
 - 注册`Serialization`
   - 将io.serizalizations属性设置为一个有逗号分隔的类名列表
   - 默认实现
-    -  `org.apache.hadoop.io.serializer.WritableSerialization`
+    - `org.apache.hadoop.io.serializer.WritableSerialization`
     - Avro指定序列化及Reflect(自反)序列化类
       - 基于IDL的序列化序列化框架
         - 适用大规模数据处理
@@ -248,17 +257,21 @@
     - MapReduce支持有限,Hadoop部分组件使用上述两个序列化框架与RPC和数据交换
 
 ## SequenceFile
+
 - 纯文本不适合记录二进制类型的数据
   - `SequenceFile`类非常合适
 - 为二进制键值对提供了一个持久数据结构
 - 可以作为小文件的容器
   - Hdfs,Mapreduce是针对大文件优化的,通过SequenceFile类型将小文件包装起来,可以获取高效率的存储和处理
+
 ## `MapFile`
+
 - 已经排过序的SequenceFile
 - 可以按键查找
 - 拥有索引
 - 索引就是一个SequenceFile
 - 主数据文件为另一个SequenceFile
+
 > MapFile进行写操作时必须顺序添加
 
 - 变种

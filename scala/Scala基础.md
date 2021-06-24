@@ -1,6 +1,7 @@
 # Scala 基础
 
 ## 基础关键字
+
 - `val`关键字
   - `val x=1;`
     - 声明一个常量
@@ -20,7 +21,7 @@
   - 类似 匿名内部类 不同的是不需要显式不可变或隐式不可变
 - `lambda`匿名函数
   - `val add=(x:Int,y:Int)=>x+y`
-    -  定义个匿名函数
+    - 定义个匿名函数
   - 类似 c++指针 指向 方法的地址
 
 - `def(参数列表)[(参数列表)...]:返回类型= [{执行语句}|执行语句(单行)]`
@@ -38,7 +39,7 @@
   - `case class Point(x:Int,y:Int)`
     - 定义一个不可变的类
   - 特性 类似 java String类
-  -  创建实例时可以省略`new`关键字
+  - 创建实例时可以省略`new`关键字
 
 - `object`关键字
   - 自动添加`static`使其变为静态变量,或静态方法
@@ -52,6 +53,7 @@
     - 继承方法未实现 需要使用`override` 关键字修饰 重写
 
 ## 类型
+
 - `Any`
   - 顶级父类
   - 定义了某些通用的方法
@@ -90,9 +92,12 @@ def main(args: Array[String]) {
   list.foreach(value=>println(value))
 }
 ```
+
 ### 隐式转换
+
 - Byte->Short->Int->Long->Long->Float->Double
 - Char->Int
+
 > 不可逆
 
 ## 类
@@ -101,6 +106,7 @@ def main(args: Array[String]) {
 - 默认提供一个构造函数不带参数
 - 构造函数可以提供默认值
   - 例
+
 ```scala
 class User2(var name:String="tom" ,var age:Int=18){
   def  js()={
@@ -111,6 +117,7 @@ new User2().js();
 new User2("k").js()
 new User2(age=40).js()
 ```
+
 - get/set
 
 ```scala
@@ -130,9 +137,11 @@ class User{
 ```
 
 ## trait特性
+
 - 泛型抽象方法
   - 例
-```Scala
+
+```scala
 //定义泛型特性
 trait Iterator[A]{
    def hasNext:Boolean;
@@ -158,8 +167,10 @@ trait Iterator[A]{
  println(xx.next())
  println(xx.next())
 ```
+
 - 混入
-```Scala
+
+```scala
 //定义一个抽象类
 abstract  class A{
   val message:String;
@@ -222,6 +233,5 @@ trait  RichIterator extends AbsIterator{
  val richStringIter=new RichStringIter;
  richStringIter foreach println
 ```
+
 > 感叹一下Scala神奇的语法
-
-

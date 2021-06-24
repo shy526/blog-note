@@ -65,7 +65,7 @@
 |:--------------------:|:-------------------:|:--------------------------------------------------------------:|
 |    `Function<T,R>`     |      R call(T)      |   接收一个输入值并返回一个输出值,用于`map()``filter()`等操作   |
 |   `Function2<T,R>`    |    R call(T1,T2)    | 接收连个输入值并返回一个输出值,用于`aggregate()``fold()`等操作 |
-| `FlatMapFunction<T,R>`| Iterable<R> call(T) |     接收一个输入值并返回人一个输入值,用于`flatmap()`等操作     |
+| `FlatMapFunction<T,R>`| Iterable<`R`> call(T) |     接收一个输入值并返回人一个输入值,用于`flatmap()`等操作     |
 
 ## RDD基本
 

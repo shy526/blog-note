@@ -26,7 +26,7 @@
   - 操作权限
   - `false`表示任何
 
-##  mapred-site.xml
+## mapred-site.xml
 
 - 没有初始文件
   - cp mapred-site.xml.template mapred-site.xml
@@ -41,6 +41,7 @@
 - `yarn.nodemanager.aux-services`
   - NodeManager获取数据的方式
   - 值:`mapreduce_shuffle`
+
 ## hadoop-env.sh
 
 - 指定javahome 根目录
@@ -74,7 +75,6 @@
 - `ip:19888`
   - 资源服务器
 
-
 ## ssh 免密登陆
 
 - `ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa`
@@ -94,5 +94,3 @@
    <value>localhost:9000</value>
  </property
 ```
-
-

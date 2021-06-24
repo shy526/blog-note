@@ -58,7 +58,7 @@ public class StreamReceiver {
 
 ```
 
-```java 
+```java
 @Controller
 public class TestController {
     @Autowired

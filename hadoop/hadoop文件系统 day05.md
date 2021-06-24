@@ -1,4 +1,5 @@
 # hadoop 文件系统
+
 - hadoop有一个抽象的文件系统概念
   - hdfs只是其中一个实现
   - jaba抽象类
@@ -17,15 +18,17 @@
 |      S3       |   S3a    |          fs.s3a.S3AFileSystem          |               由AmazonS3支持的文件系统               |
 |     Azure     |   wasb   |     fs.azure.NativeAzureFileSystem     |             MicrosoftAzure支持的文件系统             |
 |     Swift     |  swift   | fs.swift.snative.SwiftNativeFileSystem |            OPenStack Swift支持的文件系统             |
+
 - 所有java实现都在`org.apache.hadoop`包中
 
 ## 接口
+
 1. http
     - 非java开发的应用访问HDFS会很方便
     - WebHDFS协议提供的HTTP REST API 则可以方便其他语言与HDFS交互
     - HTTP接口比原生的java客户端要慢
     - HTTP访问的两种方式
-      1.  直接访问
+      1. 直接访问
           - HDFS守护进程直接服务于来自客户端的HTTP请求
           - 流程
             - http请求 --> namenode -重定向-> datenode(以流方式传输)
@@ -35,7 +38,7 @@
           - 在不同的数据中心部署的Hadoop集群之间数据传输
           - 默认监听端口14000
 
-2.C语言
+2. C语言
     - libhdfs的C语言库
       - 使用java原生接口实现
       - libwebhdfs库(https版)
@@ -47,12 +50,12 @@
 4. FUSE
     - 用户空间文件系统
 
-
-# java
+## java
 
 ## url访问数据
 
 - url 访问hdfs 数据
+
 ```java
 import org.apache.hadoop.fs.FsUrlStreamHandlerFactory;
 import org.apache.hadoop.io.IOUtils;
@@ -88,9 +91,9 @@ public class URLCat {
     }
 }
 ```
+
 > 当设置为localhost时无法远程访问 需要修改/etc/hosts文件
 >>设置`ip  localhost` ip不能为 127.0.0.1
-
 
 - FileSystemAPI
   - 解决 `URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());`只能运行一次的问题
@@ -106,6 +109,7 @@ public class URLCat {
     - 可以方便的获得一个本地实例
 
 - 读取数据
+
 ```java
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -166,6 +170,7 @@ public class FileSystemCat {
     - HDFS文件系统支持,S3文件系统不支持
 
 - 写入列子
+
 ```java
   @Test
   public void test2(){
@@ -195,6 +200,7 @@ public class FileSystemCat {
 ```
 
 - 追加列子
+
 ```java
 @Test
 public void test3(){
@@ -255,6 +261,7 @@ public void mkdirsTest(){
     }
 }
 ```
+
 > 调用create方法时会自动创建父级目录
 
 - 文件元数据
@@ -294,6 +301,7 @@ public void FileStatusTest(){
 - 列出所有文件
 
 - 递归遍历所有文件
+
 ```java
 @Test
 public void listStatusTest(){
@@ -340,6 +348,7 @@ public void allFile(FileSystem fs,Path path) throws IOException {
        }
    }
 ```
+
 > FileUti.stat2Paths(FileStatus[] fs)将FileStatus数组转换为Path数组
 
 - 通配符号
@@ -382,4 +391,3 @@ public void allFile(FileSystem fs,Path path) throws IOException {
       }
   }
 ```
-

@@ -1,4 +1,5 @@
 # YARN
+
 - Hadoop的集群资源管理系统
 - Hadoop2.0引入
 - 改善MapReduce实现
@@ -8,6 +9,7 @@
   - 建立在spark,MApReduce,Tezde上的处理框架(Pig,Hive等)
 
 ## YARN应用机制
+
 - 通过两类长期运行的守护进程提供核心服务
   - 管理集群上资源使用资源管理器(resource manager)
   - 运行在集群中所有节点上且能够启动和监控容器的节点管理器(node manger)
@@ -15,11 +17,13 @@
       - 取决于YARN的配置
 
 ## 如何运行一个YARN应用
+
 1. 客户端联系YARN要求它运行一个application master 进程
 2. YARN找到一个能够在容器中启动 application master的节点管理器
 3. 运行一个分布式计算
 
 ## 资源请求
+
 1. 灵活的资源请求模型
     - 请求多个容器,可以指定每个容器需要的计算机资源数量,指定容器的本地限制要求
       - 本地化可以提升息率
@@ -34,6 +38,7 @@
     - 可以在运行中的任意时刻提出资源申请69
 
 ### 应用生命周期
+
 1. 一个作业对应一个应用
     - MapReduce采用这种
 2. 作业的每个会话或工作流对应一个应用
@@ -46,6 +51,7 @@
     - 低延迟的查询响应
 
 ### 构建YARN应用
+
 - 一般无需构建
 - Apche Twill
   - 提供一个简单的编程模型
@@ -57,6 +63,7 @@
 ## YARN中调度
 
 ### YARN中的三种调度器
+
 - FIFO调度器(FIFO Scheduler)
   - 将应用放置在一个队列中然后按照提交顺序运行应用
   - 简单易懂,不需要配置,不适合共享集群
@@ -69,6 +76,7 @@
   - 使用相同资源时,必须等待上一个作业释放资源
 
 ### 容量调度器
+
 - 允许多个组织共享一个Hadoop集群,每个组织可以分配到一部分资源
   - 为每个组织配置专门的队列
     - 单个作业使用的资源不能超过队列的容量
@@ -92,6 +100,7 @@
     - 指定使用的队列
 
 ### 公平调度器
+
 - 修改`yarn-site.xml`
   - `yarn.resoucemaneger.scheduler.class`配置为`org.apche.hadoop.yarn.server.resoucemaneger.scheduler.fair.FairScheduler`
 
@@ -118,16 +127,18 @@
     - 除非明确指定,否则必要时创建用户队列
   - 统一放到`default`队列中
     1. 设置
-    ```xml
-      <queuePlacementPolicy>
-          <rule name="default" />
-      </queuePlacementPolicy>
-    ```
-    2.通过设置属性
-      - 设置`yarn.schedule.fair.user-as-default-queue`为false
-        - 将应用放入Default队列中
-        - 设置`yarn.schedule.fair.allow-undeclared-pools`为false
-          - 禁止用户创建队列
+
+         ```xml
+           <queuePlacementPolicy>
+               <rule name="default" />
+           </queuePlacementPolicy>
+         ```
+
+    2. 通过设置属性
+       - 设置`yarn.schedule.fair.user-as-default-queue`为false
+         - 将应用放入Default队列中
+         - 设置`yarn.schedule.fair.allow-undeclared-pools`为false
+           - 禁止用户创建队列
 
 - 抢占
   - 允许调度器终止那些占用资源超过了其公平共享份额的队列的容器
@@ -162,10 +173,8 @@
 - 主导资源公平性
   - 默认情况不使用DRF
     - 容量调度器
-      -  `org.apache.hadoop.yarn.util.resource.DominatnResourceCalculator` 设置为`yarn.schedule.capacity.resource-calculator`
-        - `capacity-schedule.xml`文件中修改
+          -  `org.apache.hadoop.yarn.util.resource.DominatnResourceCalculator` 设置为`yarn.schedule.capacity.resource-calculator`
+          - `capacity-schedule.xml`文件中修改
     - 公平调度器
       - `defaultQueyeSchedulingPolicy`设置为`drf`
         - 在分配文件的顶级元素中
-
-

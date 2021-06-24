@@ -1,42 +1,45 @@
 # restful请求中文乱码问题
 
 ## 排错
+
 - 含有中文参数时导致400错误
-    - 请求错误
+  - 请求错误
 - 错误原因
-    - `url : "http://sso.tb.com/user/check/"+escape(pin)`
-    - 由于参数中含有%导致
+  - `url : "http://sso.tb.com/user/check/"+escape(pin)`
+  - 由于参数中含有%导致
 - 修改为
-    - `escape(pin)`-->`encodeURI(pin)`
-        - 中文乱码
+  - `escape(pin)`-->`encodeURI(pin)`
+    - 中文乱码
 
 - 又修改为
-    - `encodeURI(pin)`->`encodeURI(encodeURI(pin))`
-    - Controller层添加代码
+  - `encodeURI(pin)`->`encodeURI(encodeURI(pin))`
+  - Controller层添加代码
         - `param=URLDecoder.decode(param,"utf-8");`
-    - 解决乱码问题
+  - 解决乱码问题
 
 ## 错误相关环境及代码
+
 - jdk 1.7
 - nginx
-    - 负载均衡
+  - 负载均衡
 - redis
-    - 集群
+  - 集群
 
 - web.xml
-    - 拦截器 配置
-```
+  - 拦截器 配置
+
+```XML
 <filter>
-	<filter-name>encodingFilter</filter-name>
-	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-	<init-param>
-		<param-name>encoding</param-name>
-		<param-value>UTF-8</param-value>
-	</init-param>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </init-param>
 </filter>
 <filter-mapping>
-	<filter-name>encodingFilter</filter-name>
-	<url-pattern>/*</url-pattern>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
 </filter-mapping>
 ```
 
@@ -44,12 +47,12 @@
 
 ```javascript
   $.ajax({
-    /*	url : "http://sso.yiqihuo.com/user/check/"+escape(pin)+"/1?r=" + Math.random(),
+    /*url : "http://sso.yiqihuo.com/user/check/"+escape(pin)+"/1?r=" + Math.random(),
          //错误代码
     */
-   	url : "http://sso.yiqihuo.com/user/check/"+encodeURI(encodeURI(pin))+"/1?r=" + Math.random(),
-    	dataType : "jsonp",
-    	success : function(data) {
+       url : "http://sso.yiqihuo.com/user/check/"+encodeURI(encodeURI(pin))+"/1?r=" + Math.random(),
+        dataType : "jsonp",
+        success : function(data) {
             checkpin = data.data?"1":"0";
             if (!data.data) {
                 validateSettings.succeed.run(option);
@@ -67,19 +70,19 @@
 @RequestMapping("/user/check/{param}/{type}")
 @ResponseBody
 public Object check(String callback,
-				@PathVariable String param,
-				@PathVariable Integer type) {
-	try {
-		param=URLDecoder.decode(param,"utf-8");
+                @PathVariable String param,
+                @PathVariable Integer type) {
+    try {
+        param=URLDecoder.decode(param,"utf-8");
         //二次
-		Boolean b=userService.check(type,param);
-		MappingJacksonValue mjv=new MappingJacksonValue(SysResult.oK(b));
-		mjv.setJsonpFunction(callback);
-		return mjv;
-	} catch (Exception e) {
-		e.printStackTrace();
-		return SysResult.build(201,"校验信息时出错");
-	}
+        Boolean b=userService.check(type,param);
+        MappingJacksonValue mjv=new MappingJacksonValue(SysResult.oK(b));
+        mjv.setJsonpFunction(callback);
+        return mjv;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return SysResult.build(201,"校验信息时出错");
+    }
 
 
 }
@@ -88,58 +91,62 @@ public Object check(String callback,
 ## 错误原因及一些分析
 
 - `escape(pin)`
-    -  springmvc配置了转码,导致无法转码抛出异常
-        - `URLDecoder`
-    -   示例
-        -   400错误
+  - springmvc配置了转码,导致无法转码抛出异常
+    - `URLDecoder`
+  - 示例
+    - 400错误
 
 - `encodeURI(pin)`
-    - 导致乱码
-    - 原因未知
-        - 可能%号未被真确理解
-    - 示例
-        - sundada孙->sundadaå­
+  - 导致乱码
+  - 原因未知
+    - 可能%号未被真确理解
+  - 示例
+    - sundada孙->sundadaå­
 
 - `encodeURI(encodeURI(pin))`
-    - 没有问题
-    - 需要额外解一次码
-    - 示例
-        - sundada孙->sundada%25E5%25AD%2599->sundada%E5%AD%99->sundada孙(额外解码)
+  - 没有问题
+  - 需要额外解一次码
+  - 示例
+    - sundada孙->sundada%25E5%25AD%2599->sundada%E5%AD%99->sundada孙(额外解码)
 
 - `escape(escape(pin))`
-    - 尝试了一次,二次解码报错
-        - 没有使用对应的解码方式导致 `URLDecoder.decode`抛出异常
-        - 示例
-        - sundada孙->sundada%25u5B59->sundada%u5B59->抛出异常
+  - 尝试了一次,二次解码报错
+    - 没有使用对应的解码方式导致 `URLDecoder.decode`抛出异常
+    - 示例
+    - sundada孙->sundada%25u5B59->sundada%u5B59->抛出异常
 
+## js中三种编码方式
 
-# js中三种编码方式
+### escape()
 
-## escape()
 - 函数可对字符串进行编码，这样就可以在所有的计算机上读取该字符串
 - 其中某些字符被替换成了十六进制的转义序列
-    - %uxxx
+      - %uxxx
+
 - 该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( )
 
-## encodeURI()
+### encodeURI()
+
 - 把字符串作为 URI 进行编码 utf-8
-    - %x
+      - %x
 - 该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( )
 - 不会进行转义的：;/?:@&=+$,#
 
-##  encodeURIComponent()
+### encodeURIComponent()
+
 - 字符串作为 URI 组件进行编码
 - 方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( )
 
+#### 对比
 
-### 对比
 - 三种方法都不会对 ASCII 字母、数字和规定的特殊 ASCII 标点符号进行编码
-    - 其余都替换为十六进制转义序列
+  - 其余都替换为十六进制转义序列
 
-### 引入工具escape
+#### 引入工具escape
+
 - 使用工具类来进行解码escape编码的文件
 
-```
+```JAVA
    private final static String[] hex = {
         "00","01","02","03","04","05","06","07","08","09","0A","0B","0C","0D","0E","0F",
         "10","11","12","13","14","15","16","17","18","19","1A","1B","1C","1D","1E","1F",
@@ -249,5 +256,5 @@ public Object check(String callback,
 ```
 
 ## 参考
-- http://blog.csdn.net/hbzyaxiu520/article/details/5607873
 
+- `http://blog.csdn.net/hbzyaxiu520/article/details/5607873`

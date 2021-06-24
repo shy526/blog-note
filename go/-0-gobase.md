@@ -275,7 +275,6 @@ main包含一个执行入口
 
 结构定义的方法必须放在同一个包内 可以是不同的文件 一个目录一个包
 
-
 扩展  已有类型 或系统类型 go没有继承
 
 定义别名
@@ -304,13 +303,11 @@ GOPATH
 
  管理工具 glide dep
 
-
  go mod
 
 go get -u go.uber.org/zap@版本号
 
 go mod tidy 清楚 go.sum
-
 
 GOPATH,GOVENDOR 迁移
 go build ./...

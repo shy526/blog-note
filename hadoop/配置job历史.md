@@ -1,3 +1,4 @@
+# 配置job
 
 ## yarn-site.xml
 
@@ -20,7 +21,7 @@
 </property>
 ```
 
-##  mapred-site.xml
+## mapred-site.xml
 
 ```xml
 <!-- 设置jobhistoryserver 没有配置的话 history入口不可用 -->
@@ -49,6 +50,7 @@
 ```
 
 ## jobhistory的启动与停止
+
 - 在`{hadoopHome/sbin/}`目录下执行
--  `mr-jobhistory-daemon.sh start historyserver`
--  `mr-jobhistory-daemon.sh stop historyserver`
+- `mr-jobhistory-daemon.sh start historyserver`
+- `mr-jobhistory-daemon.sh stop historyserver`

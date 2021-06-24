@@ -25,7 +25,7 @@
 
 - 任务分配
   1. `application mastr`为任务请求容器
-    - map任务优先级高于reduce任务,5%的map任务请求发出后才会为reduce发出请求
+     - map任务优先级高于reduce任务,5%的map任务请求发出后才会为reduce发出请求
 
 - 任务执行
   1. YarnChild将任务需要的资源本地化

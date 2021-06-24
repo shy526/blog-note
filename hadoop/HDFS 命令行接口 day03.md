@@ -18,14 +18,13 @@
 - `hadoop fs -mkdir /[路径]/文件`
   - 创建目录
 
-- `hadoop fs  -getmerge hdfs文件夹 本地文件夹 `
+- `hadoop fs  -getmerge hdfs文件夹 本地文件夹`
   - 合并hdfs文件夹中的文件
   - `sort文件 | tail`
     - 排序观看
 
 ## 命令详细
+
 - [csdn](https://www.cnblogs.com/MrFee/p/4683953.html)
 - [官网](http://hadoop.apache.org/docs/r2.9.0/hadoop-project-dist/hadoop-common/FileSystemShell.html
 )
-
-

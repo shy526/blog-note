@@ -26,11 +26,14 @@ public class MaxTemperatureMapper
    }
 }
 ```
+
 - 查看枚举计数器的数量
   - `mapred job -counter {JOBID} {类名$enum名} {枚举值}`
 
- ## 处理不合理的数据
+## 处理不合理的数据
+
 - 检查不合理的数据并处理
+
 ```java
 @Test
 public void parsesMalformedTemperture() throws IOException {
@@ -47,13 +50,14 @@ public void parsesMalformedTemperture() throws IOException {
 ```
 
 ## hadoop 日志
+
 - YARN有一个日志聚合服务,可以去到已完成的应用的任务日志,并把它搬运到HDFS中
-    - 被存储在一个容器文件中
+  - 被存储在一个容器文件中
 - `yarn.log-aggregation-enable`
-    - 通过设置这个属性
-    - 默认关闭
+  - 通过设置这个属性
+  - 默认关闭
     > 当设置为true时,会停止输出本地日志
-- 详细查看[配置job历史] 
+- 详细查看[配置job历史]
 
 - 查看任务日志
   - `mapred job -logs {job_id}`
@@ -118,10 +122,12 @@ public class LoggingDriver extends Configured implements Tool {
 
 }
 ```
+
 > 日志默认:info级别 
 > 使用 `-D mapreduce.(map|reduce).log.level=DEBUG` 临时设置输出等级
 
 ### 其他日志相关参数
+
 - `yarn.nodemanager.log.retain-seconds`
   - 日志保留时间
   - 默认3小时
@@ -132,15 +138,15 @@ public class LoggingDriver extends Configured implements Tool {
 
 > `export HADOOP_ROOT_LOOGEr=DEBUG,console` 设置日志在控制台输出
 
-
 ## 远程调试
+
 - 在集群上运行作业时,很难使用调试器,因不知道在那个节点运行
 - 本地重新产生错误
-    - 可以选择下载使任务失败的文件到本地重新运行
+  - 可以选择下载使任务失败的文件到本地重新运行
 - 使用JVM调优选项
   - 内存溢出
-   - `mapred.child.java.opts`设置为`-XX:HeapDumpOnOutOfMemoryError-XX:HeapDumpPath=/path/to/dumps`
-     - 产生一个堆转储为`heapdump`
+    - `mapred.child.java.opts`设置为`-XX:HeapDumpOnOutOfMemoryError-XX:HeapDumpPath=/path/to/dumps`
+    - 产生一个堆转储为`heapdump`
 - 使用任务分析
   - hadoop提供了分析作业中部分任务的机制
     - `mapreduce.task.files.preserve.failedtasks` 设置为 `true`
@@ -148,6 +154,6 @@ public class LoggingDriver extends Configured implements Tool {
     - `mapreduce.task.files.preserve.filepattern` 设置一个正则表达式
       - 保存匹配任务ID的中间结果 
     - `yarn.nodemanager.delete.debug-delay-sec`
-        - 表示等待删除本地尝试文件的时间(秒)
-        - 找到该任务失败节点找到尝试的目录
-          - 该目录由`mapreduce.cluster.local.dir` 属性决定
+      - 表示等待删除本地尝试文件的时间(秒)
+      - 找到该任务失败节点找到尝试的目录
+      - 该目录由`mapreduce.cluster.local.dir` 属性决定
