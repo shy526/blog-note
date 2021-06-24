@@ -1,4 +1,4 @@
-# springboot 配置文件和resources外置的问题 
+# springboot 配置文件和resources外置的问题
 
 - 运行目录如下
   - ![ ](assets/2018-09-11-15-31-17.png)
@@ -8,7 +8,7 @@
       - ![ ](assets/2018-09-11-15-31-44.png)
    - 结果
       - ![ ](assets/2018-09-11-15-32-13.png)
-      - 此处和网络中说的读取规则如下 
+      - 此处和网络中说的读取规则如下
           1. Jar包同级目录的config目录
           2. Jar包同级目录
           3. classPath(即resources目录)的config目录
@@ -135,6 +135,7 @@
 > 可以使用 在`<includes>`,`<excludes>` 自定义搭配
 
 - 修改yml
+
 ```yml
 spring:
   mvc:

@@ -82,5 +82,5 @@ public int  test3(Tool tool,String input,String output){
 
 ## hadoop web 界面
 
-- http://resource-manager-host:8088
+- `http://resource-manager-host:8088`
 - 浏览作业信息,跟踪作业运行进度,查找完成统计信息和日志

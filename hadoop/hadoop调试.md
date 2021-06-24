@@ -123,7 +123,7 @@ public class LoggingDriver extends Configured implements Tool {
 }
 ```
 
-> 日志默认:info级别 
+> 日志默认:info级别
 > 使用 `-D mapreduce.(map|reduce).log.level=DEBUG` 临时设置输出等级
 
 ### 其他日志相关参数
@@ -152,7 +152,7 @@ public class LoggingDriver extends Configured implements Tool {
     - `mapreduce.task.files.preserve.failedtasks` 设置为 `true`
       - 保存失败的任务文件
     - `mapreduce.task.files.preserve.filepattern` 设置一个正则表达式
-      - 保存匹配任务ID的中间结果 
+      - 保存匹配任务ID的中间结果
     - `yarn.nodemanager.delete.debug-delay-sec`
       - 表示等待删除本地尝试文件的时间(秒)
       - 找到该任务失败节点找到尝试的目录
