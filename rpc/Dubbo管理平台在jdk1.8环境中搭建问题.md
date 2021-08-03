@@ -26,4 +26,4 @@ Bean property 'URIType' is not writable or has an invalid setter method. Does th
     - `set JRE_HOME=C:\Program Files\Java\jdk1.7.0_67\jre`
 
 3. 修改项目依赖重新打包
-    - http://blog.csdn.net/blue_dd/article/details/51298438
+    - <http://blog.csdn.net/blue_dd/article/details/51298438>
